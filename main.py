@@ -292,7 +292,7 @@ async def index_entire_device(media_type: str):
     if media_type not in SUPPORTED_MEDIA:
         raise HTTPException(status_code=400, detail="Invalid media type")
 
-    sample_dir = "/app/sample_media"
+    sample_dir = "/app/sample_media"  # Consider changing to /tmp/sample_media if needed
     file_paths = get_all_files(sample_dir, SUPPORTED_MEDIA[media_type])
     if not file_paths:
         raise HTTPException(status_code=404, detail="No media files found")
