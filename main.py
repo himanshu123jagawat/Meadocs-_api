@@ -43,10 +43,10 @@ app.add_middleware(
 
 # Configurations
 device = "cpu"
-DB_PATH = os.getenv("DB_PATH", "/app/data/media_index.db")
+DB_PATH = os.getenv("DB_PATH", "/tmp/media_index.db")  # Changed to /tmp
 MODEL_PATH = os.getenv("VOSK_MODEL_PATH", "/app/vosk-model-small-en-us-0.15")
-TRANSCRIPTIONS_FOLDER = "/app/data/transcriptions"
-MEADOCS_FOLDER = "/app/data/Meadocs_data"
+TRANSCRIPTIONS_FOLDER = "/tmp/transcriptions"  # Changed to /tmp
+MEADOCS_FOLDER = "/tmp/Meadocs_data"  # Changed to /tmp
 BATCH_SIZE = int(os.getenv("BATCH_SIZE", 20))
 os.makedirs(os.path.dirname(DB_PATH), exist_ok=True)
 os.makedirs(TRANSCRIPTIONS_FOLDER, exist_ok=True)
