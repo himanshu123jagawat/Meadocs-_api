@@ -43,10 +43,10 @@ app.add_middleware(
 
 # Configurations
 device = "cpu"
-DB_PATH = os.getenv("DB_PATH", "/tmp/media_index.db")  # Changed to /tmp
-MODEL_PATH = os.getenv("VOSK_MODEL_PATH", "/app/vosk-model-small-en-us-0.15")
-TRANSCRIPTIONS_FOLDER = "/tmp/transcriptions"  # Changed to /tmp
-MEADOCS_FOLDER = "/tmp/Meadocs_data"  # Changed to /tmp
+DB_PATH = os.getenv("DB_PATH", "/tmp/media_index.db")
+MODEL_PATH = os.getenv("VOSK_MODEL_PATH", "/tmp/vosk-model-small-en-us-0.15")  # Changed to /tmp
+TRANSCRIPTIONS_FOLDER = "/tmp/transcriptions"
+MEADOCS_FOLDER = "/tmp/Meadocs_data"
 BATCH_SIZE = int(os.getenv("BATCH_SIZE", 20))
 os.makedirs(os.path.dirname(DB_PATH), exist_ok=True)
 os.makedirs(TRANSCRIPTIONS_FOLDER, exist_ok=True)
@@ -92,7 +92,10 @@ def init_db():
 # Lifespan handler
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # Startup
+    # Startup: Copy model if not in /tmp
+    if not os.path.exists(MODEL_PATH) and os.path.exists("/app/vosk-model-small-en-us-0.15"):
+        shutil.copytree("/app/vosk-model-small-en-us-0.15", MODEL_PATH)
+        logger.info(f"Copied model to {MODEL_PATH}")
     load_models()
     init_db()
     logger.info("Application started")
@@ -292,7 +295,7 @@ async def index_entire_device(media_type: str):
     if media_type not in SUPPORTED_MEDIA:
         raise HTTPException(status_code=400, detail="Invalid media type")
 
-    sample_dir = "/app/sample_media"  # Consider changing to /tmp/sample_media if needed
+    sample_dir = "/tmp/sample_media"  # Changed to /tmp
     file_paths = get_all_files(sample_dir, SUPPORTED_MEDIA[media_type])
     if not file_paths:
         raise HTTPException(status_code=404, detail="No media files found")
